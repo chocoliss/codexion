@@ -1,0 +1,39 @@
+NAME = codexion
+CC = cc 
+CFLAGS = -Wall -Wextra -Werror
+
+# Source files
+SRCS = codexion.c \
+	   parsing.c \
+       ft_split.c \
+       libft.c \
+       helper.c
+
+
+# Object files
+OBJS = $(SRCS:.c=.o)
+
+# Rules
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+
+
+$(NAME_BNS): $(OBJS_BNS)
+	@$(CC) $(CFLAGS) $(OBJS_BNS) -o $(NAME_BNS)
+
+%.o: %.c push_swap.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(GREEN)✓ Compiled: $<$(RESET)"
+
+clean:
+	@rm -f $(OBJS) $(OBJS_BNS)
+	@echo "$(RED)✗ Object files removed$(RESET)"
+
+fclean: clean
+	@rm -f $(NAME) $(NAME_BNS)
+
+re: fclean all
+
+.PHONY: all bonus clean fclean re
