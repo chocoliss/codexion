@@ -10,16 +10,16 @@ int	check_av(char **arguments)
 	if (finteger(arguments) == 1 || !arguments)
 		return (1);
 	i = 0;
-	while (arguments[i])
+	while (arguments[i] && i < 8)
 	{
 		j = ft_atoi(arguments[i]);
 		if (j == LONG_MAX || j == LONG_MIN)
 			return (1);
 		k = i + 1;
-		while (arguments[k])
+		while (arguments[k] && k < 8)
 		{
 			g = ft_atoi(arguments[k]);
-			if (g == j || g == LONG_MAX || g == LONG_MIN)
+			if (g == LONG_MAX || g == LONG_MIN)
 				return (1);
 			k++;
 		}
@@ -72,12 +72,13 @@ char	**normalize(int ac, char **av)
 int	*insert(char **arguments)
 {
 	int		i;
-
-	int *array = malloc(8 * sizeof(int));
+	int *array;
+	
+	array = malloc(7 * sizeof(int));
 	if (!array)
 		return NULL;
 	i = 0;
-	while (arguments[i])
+	while (i < 7)
 	{
 		array[i] = ft_atoi(arguments[i]);
 		i++;
@@ -90,13 +91,15 @@ int	parsing(int ac, char **av)
 	char	**arguments;
 	int *input;
 
-	if (ac < 8 || ft_error(ac, av) == 1)
+	if (ac != 9 || ft_error(ac, av) == 1)
 		return (1);
-	arguments = normalize(ac, av);
+	arguments = normalize(ac - 1, av);
 	if (!arguments || check_av(arguments) == 1)
 		return (write(2, "Error\n", 6), 1);
 	input = insert(arguments);
-    for(int i = 0; i < 8; i++)
-        printf("arguments[%d] = %d", i, input[i]);
+	for (int i = 0; i < 7 ;i++)
+		printf("%d\n",input[i]);
+	// methode(av[ac -1] , input)
+    
 	return (0);
 }

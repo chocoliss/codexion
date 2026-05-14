@@ -20,10 +20,7 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 
-$(NAME_BNS): $(OBJS_BNS)
-	@$(CC) $(CFLAGS) $(OBJS_BNS) -o $(NAME_BNS)
-
-%.o: %.c push_swap.h
+%.o: %.c codexion.h
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(GREEN)✓ Compiled: $<$(RESET)"
 
@@ -32,7 +29,7 @@ clean:
 	@echo "$(RED)✗ Object files removed$(RESET)"
 
 fclean: clean
-	@rm -f $(NAME) $(NAME_BNS)
+	@rm -f $(NAME) 
 
 re: fclean all
 

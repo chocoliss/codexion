@@ -5,6 +5,7 @@
 # include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdint.h> //in linux
 
 long	ft_atoi(const char *str);
 int	parsing(int ac, char **av);
