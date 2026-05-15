@@ -69,37 +69,32 @@ char	**normalize(int ac, char **av)
 	return (arg);
 }
 
-int	*insert(char **arguments)
+t_config	*insert(char **arguments, t_config *config)
 {
-	int		i;
-	int *array;
-	
-	array = malloc(7 * sizeof(int));
-	if (!array)
-		return NULL;
-	i = 0;
-	while (i < 7)
-	{
-		array[i] = ft_atoi(arguments[i]);
-		i++;
-	}
-	return (array);
+	config->number_of_coders = arguments[0]
+	config->time_to_burnout = arguments
+	config->time_to_compile = arguments
+	config->time_to_debug = arguments
+	config->time_to_refactor = arguments
+	config->number_of_compiles_required = arguments
+	config->dongle_cooldown = arguments
+	if (ft_strcmp("fifo",arguments[8]))
+		config->scheduler = 0
+	else
+		config->scheduler = 1
+	return (config);
 }
 
-int	parsing(int ac, char **av)
+int	parsing(int ac, char **av, t_config *config)
 {
 	char	**arguments;
 	int *input;
 
-	if (ac != 9 || ft_error(ac, av) == 1)
-		return (1);
+	if (ac != 9 || ft_error(ac, av) == 1 || (ft_strcmp(av[8],"fifo") != 0 || ft_strcmp(av[8],"edf"))) 
+		return (write(2, "Error\n", 6), 1);
 	arguments = normalize(ac - 1, av);
 	if (!arguments || check_av(arguments) == 1)
 		return (write(2, "Error\n", 6), 1);
-	input = insert(arguments);
-	for (int i = 0; i < 7 ;i++)
-		printf("%d\n",input[i]);
-	// methode(av[ac -1] , input)
-    
+	config = insert(arguments,config);
 	return (0);
 }

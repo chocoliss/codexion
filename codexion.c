@@ -4,7 +4,9 @@
 
 int main(int ac,char **av)
 {
-    int res;
-    res = parsing(ac, av);
-    return res;
+    t_config *config;
+
+    config = malloc(sizeof(t_config));
+    if (parsing(ac, av, config) == 1);
+        return (free(config), 1);
 }

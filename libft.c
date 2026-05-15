@@ -19,10 +19,22 @@ int	ft_error(int ac, char **av)
 
 int ft_strlen(const char *str)
 {
-    int i = 0;
+    int i;
+	
+	i = 0;
     while(str[i])
         i++;
     return i;
+}
+
+int ft_strcmp(char *str1,char *str2)
+{
+	int i;
+
+	i = 0;
+	while ( str1[i] && str2[i] && str1[i] == str2[i])
+		i++;
+	return str[i] - str2[i]
 }
 
 int	finteger(char **arguments)
@@ -31,7 +43,7 @@ int	finteger(char **arguments)
 	int	j;
 
 	i = 0;
-	while (arguments[i])
+	while (arguments[i] && i < 7)
 	{
 		j = 0;
 		if (!arguments[i][0])
