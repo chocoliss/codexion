@@ -10,13 +10,13 @@ int	check_av(char **arguments)
 	if (finteger(arguments) == 1 || !arguments)
 		return (1);
 	i = 0;
-	while (arguments[i] && i < 8)
+	while (arguments[i] && i < 7)
 	{
 		j = ft_atoi(arguments[i]);
 		if (j == LONG_MAX || j == LONG_MIN)
 			return (1);
 		k = i + 1;
-		while (arguments[k] && k < 8)
+		while (arguments[k] && k < 7)
 		{
 			g = ft_atoi(arguments[k]);
 			if (g == LONG_MAX || g == LONG_MIN)
@@ -69,32 +69,33 @@ char	**normalize(int ac, char **av)
 	return (arg);
 }
 
-t_config	*insert(char **arguments, t_config *config)
+int	insert(char **arguments, t_config *config)
 {
-	config->number_of_coders = arguments[0]
-	config->time_to_burnout = arguments
-	config->time_to_compile = arguments
-	config->time_to_debug = arguments
-	config->time_to_refactor = arguments
-	config->number_of_compiles_required = arguments
-	config->dongle_cooldown = arguments
-	if (ft_strcmp("fifo",arguments[8]))
-		config->scheduler = 0
+	config->number_of_coders = ft_atoi(arguments[0]);
+	config->time_to_burnout = ft_atoi(arguments[1]);
+	config->time_to_compile = ft_atoi(arguments[2]);
+	config->time_to_debug = ft_atoi(arguments[3]);
+	config->time_to_refactor = ft_atoi(arguments[4]);
+	config->number_of_compiles_required = ft_atoi(arguments[5]);
+	config->dongle_cooldown = ft_atoi(arguments[6]);
+	if (ft_strcmp("fifo",arguments[7]) == 0)
+		config->scheduler = 0;
+	else if (ft_strcmp("edf", arguments[7]) == 0)
+		config->scheduler = 1;
 	else
-		config->scheduler = 1
-	return (config);
+		return (1);
+	return (0);
 }
 
 int	parsing(int ac, char **av, t_config *config)
 {
 	char	**arguments;
-	int *input;
 
-	if (ac != 9 || ft_error(ac, av) == 1 || (ft_strcmp(av[8],"fifo") != 0 || ft_strcmp(av[8],"edf"))) 
-		return (write(2, "Error\n", 6), 1);
-	arguments = normalize(ac - 1, av);
-	if (!arguments || check_av(arguments) == 1)
-		return (write(2, "Error\n", 6), 1);
-	config = insert(arguments,config);
+	if (ac != 9 || ft_error(ac, av) == 1)
+		return (ft_write(), 1);
+	arguments = normalize(ac, av);
+	if (!arguments || check_av(arguments) == 1 || insert(arguments,config)== 1)
+		return (free_arguments(arguments), ft_write(), 1);
+	free_arguments(arguments);
 	return (0);
 }

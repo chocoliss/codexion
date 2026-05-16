@@ -1,13 +1,15 @@
 NAME = codexion
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror
+# LEAKS = -fsanitize=address -g
 
 # Source files
 SRCS = codexion.c \
 	   parsing.c \
        ft_split.c \
        libft.c \
-       helper.c
+       helper.c \
+	   rules.c
 
 
 # Object files

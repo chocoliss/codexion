@@ -7,11 +7,8 @@ int	ft_error(int ac, char **av)
 	i = 1;
 	while (i < ac)
 	{
-		if (av[i] == NULL || av[i][0] == '\0')
-		{
-			write(2, "Error\n", 6);
+		if (av[i] == NULL || av[i][0] == '\0') 
 			return (1);
-		}
 		i++;
 	}
 	return (0);
@@ -34,7 +31,7 @@ int ft_strcmp(char *str1,char *str2)
 	i = 0;
 	while ( str1[i] && str2[i] && str1[i] == str2[i])
 		i++;
-	return str[i] - str2[i]
+	return str1[i] - str2[i];
 }
 
 int	finteger(char **arguments)
@@ -61,4 +58,17 @@ int	finteger(char **arguments)
 		i++;
 	}
 	return (0);
+}
+
+void ft_write(void)
+{
+	write(2, "make sure:\n",11);
+	write(2, "1- number_of_coders (int)\n", 26);
+	write(2, "2- time_to_burnout (int)\n", 25);
+	write(2, "3- time_to_compile (int)\n", 25);
+	write(2, "4- time_to_debug (int)\n", 23);
+	write(2, "5- time_to_refactor (int)\n", 26);
+	write(2, "6- number_of_compiles_required (int)\n", 37);
+	write(2, "7- dongle_cooldown (int)\n", 25);
+	write(2, "8- scheduler ('fifo' or 'edf')\n", 31);
 }
