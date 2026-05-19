@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "codexion.h"
 
-
 int main(int ac,char **av)
 {
     t_config *config;

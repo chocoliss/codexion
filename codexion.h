@@ -3,43 +3,10 @@
 
 # include <limits.h>
 # include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdint.h> //in linux
-
-// typedef struct s_coder
-// {
-// 	int			id;
-// 	pthread_t	thread;
-// 	int			left_dongle;
-// 	int			right_dongle;
-// 	long		last_compile_start;
-// 	int			compile_count;
-// 	t_sim		*sim;
-// }	t_coder;
-
-// typedef struct s_dongle
-// {
-// 	int				id;
-// 	int				taken;
-// 	long			cooldown_until;
-// 	pthread_mutex_t	mutex;
-// 	pthread_cond_t	cond;
-// }	t_dongle;
-
-// typedef struct s_sim
-// {
-// 	t_config		config;
-// 	long			start_time;
-// 	int				stop;
-
-// 	t_coder		*coders;
-// 	t_dongle	*dongles;
-// 	pthread_t	monitor;
-
-// 	pthread_mutex_t	log_mutex;
-// 	pthread_mutex_t	state_mutex;
-// }	t_sim;
+# include <unistd.h>
+# include <stdio.h>
+# include <pthread.h>
+# include <stdint.h> //in linux
 
 typedef struct s_config
 {
@@ -52,6 +19,42 @@ typedef struct s_config
 	int	dongle_cooldown;
 	int	scheduler; // 0 = fifo, 1 = edf
 }	t_config;
+
+typedef struct s_sim t_sim;
+
+typedef struct s_coder
+{
+	int			id;
+	pthread_t	thread;
+	int			left_dongle;
+	int			right_dongle;
+	long		last_compile_start;
+	int			compile_count;
+	t_sim		*sim;
+}	t_coder;
+
+typedef struct s_dongle
+{
+	int				id;
+	int				taken;
+	long			cooldown_until;
+	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
+}	t_dongle;
+
+typedef struct s_sim
+{
+	t_config		config;
+	long			start_time;
+	int				stop;
+
+	t_coder		*coders;
+	t_dongle	*dongles;
+	pthread_t	monitor;
+
+	pthread_mutex_t	log_mutex;
+	pthread_mutex_t	state_mutex;
+}	t_sim;
 
 void ft_write(void);
 void	free_arguments(char **args);
