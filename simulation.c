@@ -3,21 +3,21 @@
 int init_sim(t_config *config,t_sim *sim)
 {
     sim->config = *config;
+    sim->start_time = 0;
+    sim->stop = 0;
     sim->dongles = malloc(sizeof(t_dongle)* config->number_of_coders);
     if (!sim->dongles)
         return 1;
     sim->coders = malloc(sizeof(t_coder)* config->number_of_coders);
     if (!sim->coders)
     {
-        free(sim->coders);
+        free(sim->dongles);
         return 1;
     }
-    sim->start_time = 0;
-    sim->stop = 0;
-    fill_coders(config,sim);
-    fill_dongles(config,sim);
     pthread_mutex_init(&sim->log_mutex, NULL);
     pthread_mutex_init(&sim->state_mutex, NULL);
+    fill_coders(config,sim);
+    fill_dongles(config,sim);
     return 0;
 }
 
@@ -76,5 +76,6 @@ void    clear_sim(t_sim *sim)
     pthread_mutex_destroy(&sim->state_mutex);
     free(sim->coders);
     free(sim->dongles);
+
     return;
 }

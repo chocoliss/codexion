@@ -3,11 +3,21 @@
 
 int main(int ac,char **av)
 {
-    t_config *config;
+    t_config config;
+    t_sim sim;
 
-    config = malloc(sizeof(t_config));
-    if (parsing(ac, av, config) == 1)
-        return (free(config), 1);
-    free(config);
+    if (parsing(ac, av, &config) == 1)
+        return (1);
+
+    if (init_sim(&config, &sim) != 0)
+        return 1;
+        
+    if (start_simulation(&sim) != 0)
+    {
+        clear_sim(&sim);
+        return 1;
+    }
+        
+    clear_sim(&sim);
     return 0;
 }

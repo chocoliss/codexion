@@ -9,7 +9,10 @@ SRCS = codexion.c \
        ft_split.c \
        libft.c \
        helper.c \
-	   rules.c
+	   rules.c \
+	   threads.c \
+	   simulation.c \
+	   time.c
 
 
 # Object files

@@ -4,6 +4,7 @@
 # include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/time.h>
 # include <stdio.h>
 # include <pthread.h>
 # include <stdint.h> //in linux
@@ -56,6 +57,10 @@ typedef struct s_sim
 	pthread_mutex_t	state_mutex;
 }	t_sim;
 
+
+long	get_time_ms(void);
+long	timestamp(t_sim *sim);
+
 void ft_write(void);
 void	free_arguments(char **args);
 int ft_strcmp(char *str1,char *str2);
@@ -73,5 +78,13 @@ char	*ft_strdup(const char *s);
 int	ft_error(int ac, char **av);
 int	finteger(char **arguments);
 int ft_strlen(const char *str);
+void *coder_routine(void *coderi);
+int create_threads(t_sim *sim);
+int start_simulation(t_sim *sim);
+int init_sim(t_config *config,t_sim *sim);
+void fill_coders(t_config *config,t_sim *sim);
+void fill_dongles(t_config *config,t_sim *sim);
+void    clear_sim(t_sim *sim);
+
 
 #endif
