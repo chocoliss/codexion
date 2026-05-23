@@ -1,38 +1,68 @@
+
 #include <stdio.h>
-#include <limits.h>
-#include <stdint.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <pthread.h>
 
-long	ft_atoi(const char *str)
+pthread_mutex_t count_mutex     = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  condition_cond  = PTHREAD_COND_INITIALIZER;
+
+void *functionCount1();
+void *functionCount2();
+int  count = 0;
+#define COUNT_DONE  10
+#define COUNT_HALT1  3
+#define COUNT_HALT2  6
+
+main()
 {
-	long	value;
-	long	sign;
-	int		digit;
+   pthread_t thread1, thread2;
 
-	value = 0;
-	sign = 1;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))
-		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			sign = -1;
-		str++;
-	}
-	while (*str >= '0' && *str <= '9')
-	{
-		digit = (*str - '0');
-		value = value * 10 + digit;
-		if (sign == 1 && value > INT32_MAX)
-			return (LONG_MAX);
-		if (sign == -1 && value > 2147483648L)
-			return (LONG_MIN);
-		str++;
-	}
-	return ((value * sign));
+   pthread_create( &thread1, NULL, &functionCount1, NULL);
+   pthread_create( &thread2, NULL, &functionCount2, NULL);
+   pthread_join( thread1, NULL);
+   pthread_join( thread2, NULL);
+
+   exit(0);
 }
 
-int main()
+void *functionCount1()
 {
-    printf("tes	:%ld\n",ft_atoi("\0"));
+   for(;;)
+   {
+      pthread_mutex_lock( &condition_mutex );
+      while( count >= COUNT_HALT1 && count <= COUNT_HALT2 )
+      {
+         pthread_cond_wait( &condition_cond, &condition_mutex );
+      }
+      pthread_mutex_unlock( &condition_mutex );
+
+      pthread_mutex_lock( &count_mutex );
+      count++;
+      printf("Counter value functionCount1: %d\n",count);
+      pthread_mutex_unlock( &count_mutex );
+
+      if(count >= COUNT_DONE) return(NULL);
+    }
+}
+
+void *functionCount2()
+{
+    for(;;)
+    {
+       pthread_mutex_lock( &condition_mutex );
+       if( count < COUNT_HALT1 || count > COUNT_HALT2 )
+       {
+          pthread_cond_signal( &condition_cond );
+       }
+       pthread_mutex_unlock( &condition_mutex );
+
+       pthread_mutex_lock( &count_mutex );
+       count++;
+       printf("Counter value functionCount2: %d\n",count);
+       pthread_mutex_unlock( &count_mutex );
+
+       if(count >= COUNT_DONE) return(NULL);
+    }
+
 }

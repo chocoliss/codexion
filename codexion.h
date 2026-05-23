@@ -85,6 +85,6 @@ int init_sim(t_config *config,t_sim *sim);
 void fill_coders(t_config *config,t_sim *sim);
 void fill_dongles(t_config *config,t_sim *sim);
 void    clear_sim(t_sim *sim);
-
+void print_state(char *msg, t_coder *coder);
 
 #endif

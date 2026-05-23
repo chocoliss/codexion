@@ -5,7 +5,7 @@ void *coder_routine(void *coderi)
     t_coder *coder;
     
     coder = (t_coder *) coderi;
-    printf("time: %ld id:%d started\n",timestamp(coder->sim),coder->id);
+    print_state("started",coder);
     return NULL;
 }
 
@@ -43,4 +43,14 @@ int start_simulation(t_sim *sim)
     if (create_threads(sim) == 1)
         return 1;
     return 0;
+}
+
+void print_state(char *msg, t_coder *coder)
+{
+    t_sim *sim;
+
+    sim = coder->sim;
+    pthread_mutex_lock(&sim->log_mutex);
+    printf("%ld %d %s\n",timestamp(sim), coder->id,msg);
+    pthread_mutex_unlock(&sim->log_mutex);
 }

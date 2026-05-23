@@ -1,7 +1,7 @@
 NAME = codexion
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror
-# LEAKS = -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror -pthread
+# LEAKS = -fsanitize=pthread
 
 # Source files
 SRCS = codexion.c \
