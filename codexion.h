@@ -55,6 +55,7 @@ typedef struct s_sim
 
 	pthread_mutex_t	log_mutex;
 	pthread_mutex_t	state_mutex;
+	pthread_cond_t dongles_cond;
 }	t_sim;
 
 
@@ -86,5 +87,13 @@ void fill_coders(t_config *config,t_sim *sim);
 void fill_dongles(t_config *config,t_sim *sim);
 void    clear_sim(t_sim *sim);
 void print_state(char *msg, t_coder *coder);
+void *monitor_routine(void * arg);
+void set_stop(t_sim *sim);
+int is_stopped(t_sim *sim);
+int	smart_sleep(t_sim *sim,long duration_ms);
+int all_coders_finished(t_sim *sim);
+void print_burnout(t_coder *coder);
+int take_dongles(int i,t_sim *sim);
+void    release_dongles(int i, t_sim *sim);
 
 #endif

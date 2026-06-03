@@ -35,7 +35,7 @@ void fill_coders(t_config *config,t_sim *sim)
             sim->coders[i].right_dongle = 0;
         else
             sim->coders[i].right_dongle = i + 1;
-        sim->coders[i].last_compile_start = 0;
+        sim->coders[i].last_compile_start = get_time_ms();
         sim->coders[i].sim = sim;
         i++;
     }

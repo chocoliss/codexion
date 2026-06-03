@@ -8,7 +8,7 @@ int main(int ac,char **av)
 
     if (parsing(ac, av, &config) == 1)
         return (1);
-
+    
     if (init_sim(&config, &sim) != 0)
         return 1;
         

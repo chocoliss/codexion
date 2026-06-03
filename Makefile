@@ -12,7 +12,8 @@ SRCS = codexion.c \
 	   rules.c \
 	   threads.c \
 	   simulation.c \
-	   time.c
+	   time.c \
+	   dongles.c
 
 
 # Object files
