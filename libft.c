@@ -72,3 +72,32 @@ void ft_write(void)
 	write(2, "7- dongle_cooldown (int)\n", 25);
 	write(2, "8- scheduler ('fifo' or 'edf')\n", 31);
 }
+
+void ft_putchar(int i)
+{
+    write(1,&i,1);
+}
+
+void ft_putnbr(int nb)
+{
+	if (nb == -2147483648)
+	{
+		write(1,"-2147483648",11);
+		return;
+	}
+	if (nb < 0)
+	{
+		nb = -nb;
+		write(1,"-",1);
+	}
+	if (nb > 9)
+        ft_putnbr(nb / 10);
+	ft_putchar((nb % 10) + 48);
+	return;
+}
+
+void ft_putstr(char *str)
+{
+	while(*str)
+		write(1,str++,1);
+}

@@ -7,11 +7,11 @@ void *coder_routine(void *arg)
     
     coder = (t_coder *) arg;
     sim = coder->sim;
-    while(!is_stopped(sim))
+    while(!is_stopped(sim) || coder->compile_count >= sim->config.number_of_compiles_required )
     {
         if (take_dongles(coder->id - 1, sim) == 0)
             return (NULL);
-
+        
         print_state("is compiling",coder);
         pthread_mutex_lock(&sim->state_mutex);
         coder->last_compile_start = get_time_ms();
@@ -32,7 +32,6 @@ void *coder_routine(void *arg)
         print_state("is refactoring",coder);
         if (smart_sleep(sim, sim->config.time_to_refactor) == 1)
             return NULL;
-
     }
     return NULL;
 }
@@ -84,7 +83,12 @@ void print_state(char *msg, t_coder *coder)
     if (is_stopped(sim) == 1)
         return ;
     pthread_mutex_lock(&sim->log_mutex);
-    printf("%ld %d %s\n",timestamp(sim), coder->id,msg);
+    ft_putnbr((int)timestamp(sim));
+    write(1," ",1);
+    ft_putnbr(coder->id);
+    write(1," ",1);
+    ft_putstr(msg);
+    write(1,"\n",1);
     pthread_mutex_unlock(&sim->log_mutex);
 }
 
@@ -105,8 +109,7 @@ void	*monitor_routine(void *arg)
 			{
 				sim->stop = 1;
 				pthread_mutex_unlock(&sim->state_mutex);
-				print_burnout(&sim->coders[i]);
-				return (NULL);
+				return (print_burnout(&sim->coders[i]), NULL);
 			}
 			pthread_mutex_unlock(&sim->state_mutex);
             i++;

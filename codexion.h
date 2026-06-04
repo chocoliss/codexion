@@ -9,6 +9,15 @@
 # include <pthread.h>
 # include <stdint.h> //in linux
 
+typedef struct s_queue
+{
+	int coder_id;
+	int count;
+	struct s_queue *next;
+	struct s_queue *previous;
+	
+}	t_queue;
+
 typedef struct s_config
 {
 	int	number_of_coders;
@@ -95,5 +104,10 @@ int all_coders_finished(t_sim *sim);
 void print_burnout(t_coder *coder);
 int take_dongles(int i,t_sim *sim);
 void    release_dongles(int i, t_sim *sim);
+
+void ft_putchar(int i);
+void ft_putnbr(int nb);
+void ft_putstr(char *str);
+
 
 #endif

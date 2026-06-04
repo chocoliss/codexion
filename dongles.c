@@ -1,31 +1,21 @@
 #include "codexion.h"
 
-// int dongles(t_sim *sim)
-// {
-//     int i;
-
-//     i = 0;
-    
-//     while(i < sim->config.number_of_coders && take_dongles(i,sim) == 0)
-//     {
-//         pthread_mutex_lock(&sim->dongles[i].mutex);
-
-//         pthread_mutex_unlock(&sim->dongles[i].mutex);
-//         i++;
-//     }
-// }
-
 int take_dongles(int i,t_sim *sim)
 {
-    int succes;
     int left;
     int right;
 
-    succes = 0;
     pthread_mutex_lock(&sim->state_mutex);
     left = i;
     right = (i + 1) % sim->config.number_of_coders;
-    while ( sim->stop == 0 &&(sim->dongles[left].taken == 1 || sim->dongles[right].taken == 1 ))
+    if (sim->coders[i].compile_count >= sim->config.number_of_compiles_required)
+        return (pthread_mutex_unlock(&sim->state_mutex), 0);
+    if (left == right)
+    {
+        sim->dongles[left].taken = 1;
+        return(pthread_mutex_unlock(&sim->state_mutex),print_state("has taken a dongle", &sim->coders[i]),0);
+    }
+    while (sim->stop == 0 && (sim->dongles[left].taken == 1 || sim->dongles[right].taken == 1 ))
     {
         pthread_cond_wait(&sim->dongles_cond,&sim->state_mutex);
     }
@@ -33,10 +23,10 @@ int take_dongles(int i,t_sim *sim)
     {
         sim->dongles[left].taken = 1;
         sim->dongles[right].taken = 1;
-        succes = 1;
+        pthread_mutex_unlock(&sim->state_mutex);
+        return(print_state("has taken a dongle", &sim->coders[i]), print_state("has taken a dongle", &sim->coders[i]), 1);
     }
-    pthread_mutex_unlock(&sim->state_mutex);
-    return (succes);
+    return (pthread_mutex_unlock(&sim->state_mutex), 0);
 }
 
 void    release_dongles(int i, t_sim *sim)

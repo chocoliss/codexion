@@ -21,7 +21,12 @@ void print_burnout(t_coder *coder)
 
     sim = coder->sim;
     pthread_mutex_lock(&sim->log_mutex);
-    printf("%ld %d burned out\n", timestamp(sim), coder->id);
+    ft_putnbr((int)timestamp(sim));
+    write(1," ",1);
+    ft_putnbr(coder->id);
+    write(1," ",1);
+    ft_putstr("burned out\n");
+    write(1,"\n",1);	
     pthread_mutex_unlock(&sim->log_mutex);
 }
 
@@ -29,17 +34,20 @@ int all_coders_finished(t_sim *sim)
 {
 	int i;
 
+	if (sim->config.number_of_compiles_required <= 0)
+		return (0);
+	
 	i = 0;
+	pthread_mutex_lock(&sim->state_mutex);
 	while (i < sim->config.number_of_coders)
 	{
-		pthread_mutex_lock(&sim->state_mutex);
 		if (sim->config.number_of_compiles_required > sim->coders[i].compile_count)
 		{
 			pthread_mutex_unlock(&sim->state_mutex);
 			return(0);
 		}
-		pthread_mutex_unlock(&sim->state_mutex);
 		i++;
+		pthread_mutex_unlock(&sim->state_mutex);
 	}
-	return 1;
+	return (1);
 }

@@ -1,7 +1,13 @@
 NAME = codexion
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror -pthread
-# LEAKS = -fsanitize=pthread
+LEAKS =  valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+         --log-file=valgrind-out.txt \
+         ./executable exampleParam1
+
 
 # Source files
 SRCS = codexion.c \
