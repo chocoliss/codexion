@@ -94,3 +94,10 @@ char	*ft_strdup(const char *s)
 	ft_memcpy(dup, s, len + 1);
 	return (dup);
 }
+
+long ft_max(long left,long right)
+{
+	if (left > right)
+		return left;
+	return right;
+}

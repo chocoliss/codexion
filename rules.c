@@ -47,7 +47,7 @@ int all_coders_finished(t_sim *sim)
 			return(0);
 		}
 		i++;
-		pthread_mutex_unlock(&sim->state_mutex);
 	}
+	pthread_mutex_unlock(&sim->state_mutex);
 	return (1);
 }

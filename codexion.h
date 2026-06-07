@@ -70,6 +70,7 @@ typedef struct s_sim
 
 long	get_time_ms(void);
 long	timestamp(t_sim *sim);
+struct timespec ms_to_timespec(long ms);
 
 void ft_write(void);
 void	free_arguments(char **args);
@@ -104,10 +105,15 @@ int all_coders_finished(t_sim *sim);
 void print_burnout(t_coder *coder);
 int take_dongles(int i,t_sim *sim);
 void    release_dongles(int i, t_sim *sim);
-
+ 
 void ft_putchar(int i);
 void ft_putnbr(int nb);
 void ft_putstr(char *str);
+long ft_max(long left,long right);
 
+
+void increment_compile_count(t_sim *sim, t_coder *coder);
+void increment_last_compile_start(t_sim *sim, t_coder *coder);
+int keep_compiling(t_sim *sim, t_coder *coder);
 
 #endif

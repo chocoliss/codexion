@@ -18,6 +18,7 @@ int init_sim(t_config *config,t_sim *sim)
     pthread_mutex_init(&sim->state_mutex, NULL);
     fill_coders(config,sim);
     fill_dongles(config,sim);
+    pthread_cond_init(&sim->dongles_cond, NULL);
     return 0;
 }
 
@@ -74,6 +75,7 @@ void    clear_sim(t_sim *sim)
     }
     pthread_mutex_destroy(&sim->log_mutex);
     pthread_mutex_destroy(&sim->state_mutex);
+    pthread_cond_destroy(&sim->dongles_cond);
     free(sim->coders);
     free(sim->dongles);
 

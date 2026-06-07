@@ -71,11 +71,15 @@ char	**normalize(int ac, char **av)
 
 int	insert(char **arguments, t_config *config)
 {
+	if (ft_atoi(arguments[0]) <= 0) 
+		return (1);
 	config->number_of_coders = ft_atoi(arguments[0]);
 	config->time_to_burnout = ft_atoi(arguments[1]);
 	config->time_to_compile = ft_atoi(arguments[2]);
 	config->time_to_debug = ft_atoi(arguments[3]);
 	config->time_to_refactor = ft_atoi(arguments[4]);
+	if (ft_atoi(arguments[5]) <= 0)
+		return (1);
 	config->number_of_compiles_required = ft_atoi(arguments[5]);
 	config->dongle_cooldown = ft_atoi(arguments[6]);
 	if (ft_strcmp("fifo",arguments[7]) == 0)

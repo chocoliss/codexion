@@ -7,31 +7,22 @@ void *coder_routine(void *arg)
     
     coder = (t_coder *) arg;
     sim = coder->sim;
-    while(!is_stopped(sim) || coder->compile_count >= sim->config.number_of_compiles_required )
+    while(keep_compiling(sim,coder))
     {
         if (take_dongles(coder->id - 1, sim) == 0)
             return (NULL);
-        
         print_state("is compiling",coder);
-        pthread_mutex_lock(&sim->state_mutex);
-        coder->last_compile_start = get_time_ms();
-        pthread_mutex_unlock(&sim->state_mutex);
-        
+        increment_last_compile_start(sim, coder);
         if (smart_sleep(sim, sim->config.time_to_compile) == 1)
             return (release_dongles(coder->id - 1,sim),NULL);
         release_dongles(coder->id - 1,sim);
-
-        pthread_mutex_lock(&sim->state_mutex);
-        coder->compile_count += 1;
-        pthread_mutex_unlock(&sim->state_mutex);
-
+        increment_compile_count(sim,coder);
         print_state("is debugging",coder);
         if (smart_sleep(sim, sim->config.time_to_debug) == 1)
         return (NULL);
-        
         print_state("is refactoring",coder);
         if (smart_sleep(sim, sim->config.time_to_refactor) == 1)
-            return NULL;
+            return (NULL);
     }
     return NULL;
 }
@@ -41,14 +32,14 @@ int create_threads(t_sim *sim)
     int i;
 
     i = 0;
+    if (pthread_create(&sim->monitor, NULL, monitor_routine,sim) != 0)
+        return 1;
     while (i < sim->config.number_of_coders)
     {
         if (pthread_create(&sim->coders[i].thread,NULL,coder_routine,&sim->coders[i]) != 0 )
         return 1;
         i++;
     }
-    if (pthread_create(&sim->monitor, NULL, monitor_routine,sim) != 0)
-        return 1;
     i = 0;
     while (i < sim->config.number_of_coders)
     {
