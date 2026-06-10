@@ -9,15 +9,6 @@
 # include <pthread.h>
 # include <stdint.h> //in linux
 
-typedef struct s_queue
-{
-	int coder_id;
-	int count;
-	struct s_queue *next;
-	struct s_queue *previous;
-	
-}	t_queue;
-
 typedef struct s_config
 {
 	int	number_of_coders;
@@ -57,6 +48,10 @@ typedef struct s_sim
 	t_config		config;
 	long			start_time;
 	int				stop;
+	int				queue;
+	int 			rear;
+	int				count;
+	int				front;
 
 	t_coder		*coders;
 	t_dongle	*dongles;

@@ -17,7 +17,6 @@ int main(int ac,char **av)
         clear_sim(&sim);
         return 1;
     }
-        
     clear_sim(&sim);
     return 0;
 }

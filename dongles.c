@@ -4,6 +4,8 @@ int take_dongles(int i,t_sim *sim)
 {
     int left;
     int right;
+    int index;
+    int *queue;
     struct timespec ts;
 
     pthread_mutex_lock(&sim->state_mutex);
@@ -11,10 +13,11 @@ int take_dongles(int i,t_sim *sim)
     right = (i + 1) % sim->config.number_of_coders;
     if (sim->coders[i].compile_count >= sim->config.number_of_compiles_required)
         return (pthread_mutex_unlock(&sim->state_mutex), 0);
+    queue = enqueue(sim, i);
     if (left == right)
         return(sim->dongles[left].taken = 1, pthread_mutex_unlock(&sim->state_mutex),print_state("has taken a dongle", &sim->coders[i]),0);
-    while (sim->stop == 0 && (sim->dongles[left].taken == 1 
-    || sim->dongles[right].taken == 1 || get_time_ms() < sim->dongles[right].cooldown_until || get_time_ms() < sim->dongles[left].cooldown_until))
+    while (sim->stop == 0 && (sim->dongles[left].taken == 1 || sim->dongles[right].taken == 1 || 
+        get_time_ms() < sim->dongles[right].cooldown_until || get_time_ms() < sim->dongles[left].cooldown_until))
         if (!sim->dongles[left].taken && !sim->dongles[right].taken)
         {
             long wake = ft_max(sim->dongles[left].cooldown_until, sim->dongles[right].cooldown_until);
