@@ -76,24 +76,13 @@ void fill_dongles(t_config *config,t_sim *sim)
     return;
 }
 
-void    clear_sim(t_sim *sim)
+
+int is_stopped(t_sim *sim)
 {
-    int i;
+	int stop;
 
-    if (!sim)
-		return;
-    i = 0;
-    while(i < sim->config.number_of_coders)
-    {
-        pthread_mutex_destroy(&sim->dongles[i].mutex);
-        pthread_cond_destroy(&sim->dongles[i].cond);
-        i++;
-    }
-    pthread_mutex_destroy(&sim->log_mutex);
-    pthread_mutex_destroy(&sim->state_mutex);
-    pthread_cond_destroy(&sim->dongles_cond);
-    free(sim->coders);
-    free(sim->dongles);
-
-    return;
+	pthread_mutex_lock(&sim->state_mutex);
+	stop = sim->stop ;
+	pthread_mutex_unlock(&sim->state_mutex);
+	return (stop);
 }

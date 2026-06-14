@@ -14,11 +14,13 @@
 #define CODEXION_H
 
 # include <limits.h>
+# include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
-# include <stdio.h>
 # include <pthread.h>
+# include <stdio.h>
+#include <stdint.h> //////////
 
 typedef struct s_config
 {
@@ -80,7 +82,6 @@ struct timespec ms_to_timespec(long ms);
 
 void ft_write(void);
 void	free_arguments(char **args);
-int ft_strcmp(char *str1,char *str2);
 long	ft_atoi(const char *str);
 int	parsing(int ac, char **av, t_config *config);
 char	**ft_split(char const *s, char c);
@@ -94,7 +95,6 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s);
 int	ft_error(int ac, char **av);
 int	finteger(char **arguments);
-int ft_strlen(const char *str);
 void *coder_routine(void *coderi);
 int create_threads(t_sim *sim);
 int start_simulation(t_sim *sim);
@@ -121,6 +121,11 @@ long ft_max(long left,long right);
 void increment_compile_count(t_sim *sim, t_coder *coder);
 void increment_last_compile_start(t_sim *sim, t_coder *coder);
 int keep_compiling(t_sim *sim, t_coder *coder);
+int	take_success(t_sim *sim, int i, int left, int right);
+void	dongles_wait(t_sim *sim, int i, int left, int right);
+int	take(t_sim *sim, int i, int left, int right);
+int	coder_case(t_sim *sim, int i, int left);
+
 
 long get_deadline(t_sim *sim, int coder_id);
 void enqueue(t_sim *sim, int coder_id);

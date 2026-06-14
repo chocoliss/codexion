@@ -10,8 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "codexion.h"
+
+void    clear_sim(t_sim *sim)
+{
+    int i;
+
+    if (!sim)
+		return;
+    i = 0;
+    while(i < sim->config.number_of_coders)
+    {
+        pthread_mutex_destroy(&sim->dongles[i].mutex);
+        pthread_cond_destroy(&sim->dongles[i].cond);
+        i++;
+    }
+    pthread_mutex_destroy(&sim->log_mutex);
+    pthread_mutex_destroy(&sim->state_mutex);
+    pthread_cond_destroy(&sim->dongles_cond);
+    free(sim->coders);
+    free(sim->dongles);
+    free(sim->queue);
+    return;
+}
 
 int main(int ac,char **av)
 {

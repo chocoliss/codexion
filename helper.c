@@ -70,8 +70,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (ft_strdup(s2));
 	if (!s2)
 		return (ft_strdup(s1));
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
+	len1 = strlen(s1);
+	len2 = strlen(s2);
 	p = malloc(len1 + len2 + 1);
 	if (!p)
 		return (NULL);
@@ -99,17 +99,10 @@ char	*ft_strdup(const char *s)
 	char	*dup;
 	size_t	len;
 
-	len = ft_strlen(s);
+	len = strlen(s);
 	dup = (char *)malloc(len + 1);
 	if (!dup)
 		return (NULL);
 	ft_memcpy(dup, s, len + 1);
 	return (dup);
-}
-
-long ft_max(long left,long right)
-{
-	if (left > right)
-		return left;
-	return right;
 }

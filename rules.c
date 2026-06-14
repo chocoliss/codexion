@@ -88,3 +88,16 @@ void dequeue_i(t_sim *sim, int coder_id)
         j++;
     }
 }
+
+void ft_write(void)
+{
+	write(2, "make sure:\n",11);
+	write(2, "1- number_of_coders (positive int)\n", 35);
+	write(2, "2- time_to_burnout (int)\n", 25);
+	write(2, "3- time_to_compile (int)\n", 25);
+	write(2, "4- time_to_debug (int)\n", 23);
+	write(2, "5- time_to_refactor (int)\n", 26);
+	write(2, "6- number_of_compiles_required (positive int)\n", 46);
+	write(2, "7- dongle_cooldown (int)\n", 25);
+	write(2, "8- scheduler ('fifo' or 'edf')\n", 31);
+}

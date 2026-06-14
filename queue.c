@@ -31,7 +31,6 @@ void enqueue_fifo(t_sim *sim,int coder_id)
     sim->queue[sim->rear] = coder_id;
     sim->rear = (sim->rear + 1) % sim->config.number_of_coders;
     sim->count++;
-    print_state("test",&sim->coders[coder_id]);
     return;
 }
 

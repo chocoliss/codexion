@@ -42,16 +42,6 @@ struct timespec ms_to_timespec(long ms)
     return (ts);
 }
 
-int is_stopped(t_sim *sim)
-{
-	int stop;
-
-	pthread_mutex_lock(&sim->state_mutex);
-	stop = sim->stop ;
-	pthread_mutex_unlock(&sim->state_mutex);
-	return (stop);
-}
-
 int	smart_sleep(t_sim *sim,long duration_ms)
 {
 	long start;

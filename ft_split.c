@@ -93,7 +93,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 	if (!s)
 		return (NULL);
-	slen = ft_strlen(s);
+	slen = strlen(s);
 	if (start >= slen)
 	{
 		p = (char *)malloc(1);

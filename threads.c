@@ -27,8 +27,8 @@ void *coder_routine(void *arg)
         increment_last_compile_start(sim, coder);
         if (smart_sleep(sim, sim->config.time_to_compile) == 1)
             return (release_dongles(coder->id - 1,sim),NULL);
-        release_dongles(coder->id - 1,sim);
         increment_compile_count(sim,coder);
+        release_dongles(coder->id - 1,sim);
         print_state("is debugging",coder);
         if (smart_sleep(sim, sim->config.time_to_debug) == 1)
         return (NULL);
@@ -112,7 +112,7 @@ void	*monitor_routine(void *arg)
 			{
 				sim->stop = 1;
 				pthread_mutex_unlock(&sim->state_mutex);
-				return (print_burnout(&sim->coders[i]), NULL);
+				return (pthread_cond_broadcast(&sim->dongles_cond), print_burnout(&sim->coders[i]), NULL);
 			}
 			pthread_mutex_unlock(&sim->state_mutex);
             i++;

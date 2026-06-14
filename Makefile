@@ -33,7 +33,8 @@ SRCS = codexion.c \
 	   simulation.c \
 	   time.c \
 	   dongles.c \
-	   queue.c
+	   dongles_helper.c \
+	   queue.c 
 
 
 # Object files

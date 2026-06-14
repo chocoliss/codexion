@@ -26,26 +26,6 @@ int	ft_error(int ac, char **av)
 	return (0);
 }
 
-int ft_strlen(const char *str)
-{
-    int i;
-	
-	i = 0;
-    while(str[i])
-        i++;
-    return i;
-}
-
-int ft_strcmp(char *str1,char *str2)
-{
-	int i;
-
-	i = 0;
-	while ( str1[i] && str2[i] && str1[i] == str2[i])
-		i++;
-	return str1[i] - str2[i];
-}
-
 int	finteger(char **arguments)
 {
 	int	i;
@@ -70,19 +50,6 @@ int	finteger(char **arguments)
 		i++;
 	}
 	return (0);
-}
-
-void ft_write(void)
-{
-	write(2, "make sure:\n",11);
-	write(2, "1- number_of_coders (int)\n", 26);
-	write(2, "2- time_to_burnout (int)\n", 25);
-	write(2, "3- time_to_compile (int)\n", 25);
-	write(2, "4- time_to_debug (int)\n", 23);
-	write(2, "5- time_to_refactor (int)\n", 26);
-	write(2, "6- number_of_compiles_required (int)\n", 37);
-	write(2, "7- dongle_cooldown (int)\n", 25);
-	write(2, "8- scheduler ('fifo' or 'edf')\n", 31);
 }
 
 void ft_putchar(int i)

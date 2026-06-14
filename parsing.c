@@ -94,9 +94,9 @@ int	insert(char **arguments, t_config *config)
 		return (1);
 	config->number_of_compiles_required = ft_atoi(arguments[5]);
 	config->dongle_cooldown = ft_atoi(arguments[6]);
-	if (ft_strcmp("fifo",arguments[7]) == 0)
+	if (strcmp("fifo",arguments[7]) == 0)
 		config->scheduler = 0;
-	else if (ft_strcmp("edf", arguments[7]) == 0)
+	else if (strcmp("edf", arguments[7]) == 0)
 		config->scheduler = 1;
 	else
 		return (1);

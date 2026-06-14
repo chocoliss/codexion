@@ -12,41 +12,6 @@
 
 #include "codexion.h"
 
-int take_dongles(int i,t_sim *sim)
-{
-    int left;
-    int right;
-    int index;
-    struct timespec ts;
-
-    pthread_mutex_lock(&sim->state_mutex);
-    if (sim->coders[i].compile_count >= sim->config.number_of_compiles_required)
-        return (pthread_mutex_unlock(&sim->state_mutex), 0);
-    enqueue(sim, i);
-    left = i;
-    right = (i + 1) % sim->config.number_of_coders;
-    if (left == right)
-        return(dequeue(sim), sim->dongles[left].taken = 1, pthread_mutex_unlock(&sim->state_mutex),print_state("has taken a dongle", &sim->coders[i]),0);
-    while (sim->stop == 0 && (sim->dongles[left].taken == 1 || sim->dongles[right].taken == 1 || sim->queue[sim->front] != i ||
-        get_time_ms() < sim->dongles[right].cooldown_until || get_time_ms() < sim->dongles[left].cooldown_until))
-    {
-        if (!sim->dongles[left].taken && !sim->dongles[right].taken && sim->queue[sim->front] == i)
-        {
-            long wake = ft_max(sim->dongles[left].cooldown_until, sim->dongles[right].cooldown_until);
-            ts = ms_to_timespec(wake);
-            pthread_cond_timedwait(&sim->dongles_cond, &sim->state_mutex, &ts);
-        }
-        else
-            pthread_cond_wait(&sim->dongles_cond, &sim->state_mutex);
-    }
-    if (sim->stop == 1)
-        return (dequeue_i(sim,i), pthread_mutex_unlock(&sim->state_mutex), 0);
-    dequeue(sim);
-    sim->dongles[left].taken = 1;
-    sim->dongles[right].taken = 1;
-    return(pthread_mutex_unlock(&sim->state_mutex), print_state("has taken a dongle", &sim->coders[i]), print_state("has taken a dongle", &sim->coders[i]), 1);
-}
-
 void    release_dongles(int i, t_sim *sim)
 {
     int left;
@@ -91,4 +56,25 @@ int keep_compiling(t_sim *sim, t_coder *coder)
               coder->compile_count < sim->config.number_of_compiles_required);
     pthread_mutex_unlock(&sim->state_mutex);
     return (result);
+}
+
+int	take_dongles(int i, t_sim *sim)
+{
+	int	left;
+	int	right;
+
+	pthread_mutex_lock(&sim->state_mutex);
+	if (sim->coders[i].compile_count
+		>= sim->config.number_of_compiles_required)
+		return (pthread_mutex_unlock(&sim->state_mutex), 0);
+	enqueue(sim, i);
+	left = i;
+	right = (i + 1) % sim->config.number_of_coders;
+	if (left == right)
+		return (coder_case(sim, i, left));
+	dongles_wait(sim, i, left, right);
+	if (sim->stop == 1)
+		return (dequeue_i(sim, i),
+			pthread_mutex_unlock(&sim->state_mutex), 0);
+	return (take_success(sim, i, left, right));
 }
