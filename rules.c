@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rules.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/14 15:15:55 by imansar           #+#    #+#             */
+/*   Updated: 2026/06/14 15:25:50 by imansar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void	free_arguments(char **args)
@@ -50,4 +62,29 @@ int all_coders_finished(t_sim *sim)
 	}
 	pthread_mutex_unlock(&sim->state_mutex);
 	return (1);
+}
+
+void dequeue_i(t_sim *sim, int coder_id)
+{
+    int j;
+    int n;
+
+    n = sim->config.number_of_coders;
+    j = 0;
+    while (j < sim->count)
+    {
+        if (sim->queue[(sim->front + j) % n] == coder_id)
+        {
+            while (j < sim->count - 1)
+            {
+                sim->queue[(sim->front + j) % n] =
+                    sim->queue[(sim->front + j + 1) % n];
+                j++;
+            }
+            sim->rear = (sim->rear - 1 + n) % n;
+            sim->count--;
+            return ;
+        }
+        j++;
+    }
 }

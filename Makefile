@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: imansar <imansar@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/06/14 15:14:53 by imansar           #+#    #+#              #
+#    Updated: 2026/06/14 15:14:54 by imansar          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = codexion
 CC = cc 
 # CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
@@ -20,7 +32,8 @@ SRCS = codexion.c \
 	   threads.c \
 	   simulation.c \
 	   time.c \
-	   dongles.c
+	   dongles.c \
+	   queue.c
 
 
 # Object files

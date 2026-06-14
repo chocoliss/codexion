@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/14 15:15:59 by imansar           #+#    #+#             */
+/*   Updated: 2026/06/14 15:55:36 by imansar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 int init_sim(t_config *config,t_sim *sim)
@@ -5,6 +17,10 @@ int init_sim(t_config *config,t_sim *sim)
     sim->config = *config;
     sim->start_time = 0;
     sim->stop = 0;
+    sim->queue = (int *)malloc(sizeof(int) * config->number_of_coders);
+    sim->front = 0;
+    sim->rear = 0;
+    sim->count = 0;
     sim->dongles = malloc(sizeof(t_dongle)* config->number_of_coders);
     if (!sim->dongles)
         return 1;

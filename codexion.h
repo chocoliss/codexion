@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/14 15:14:04 by imansar           #+#    #+#             */
+/*   Updated: 2026/06/14 15:19:16 by imansar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 #define CODEXION_H
 
@@ -7,7 +19,6 @@
 # include <sys/time.h>
 # include <stdio.h>
 # include <pthread.h>
-# include <stdint.h> //in linux
 
 typedef struct s_config
 {
@@ -18,7 +29,7 @@ typedef struct s_config
 	int	time_to_refactor;
 	int	number_of_compiles_required;
 	int	dongle_cooldown;
-	int	scheduler; // 0 = fifo, 1 = edf
+	int	scheduler;
 }	t_config;
 
 typedef struct s_sim t_sim;
@@ -48,7 +59,7 @@ typedef struct s_sim
 	t_config		config;
 	long			start_time;
 	int				stop;
-	int				queue;
+	int				*queue;
 	int 			rear;
 	int				count;
 	int				front;
@@ -110,5 +121,13 @@ long ft_max(long left,long right);
 void increment_compile_count(t_sim *sim, t_coder *coder);
 void increment_last_compile_start(t_sim *sim, t_coder *coder);
 int keep_compiling(t_sim *sim, t_coder *coder);
+
+long get_deadline(t_sim *sim, int coder_id);
+void enqueue(t_sim *sim, int coder_id);
+void enqueue_fifo(t_sim *sim,int coder_id);
+int dequeue(t_sim *sim);
+void enqueue_edf(t_sim *sim, int coder_id);
+void dequeue_i(t_sim *sim, int i);
+
 
 #endif
