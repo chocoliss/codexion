@@ -83,7 +83,7 @@ char	**normalize(int ac, char **av)
 
 int	insert(char **arguments, t_config *config)
 {
-	if (ft_atoi(arguments[0]) <= 0) 
+	if (ft_atoi(arguments[0]) <= 0)
 		return (1);
 	config->number_of_coders = ft_atoi(arguments[0]);
 	config->time_to_burnout = ft_atoi(arguments[1]);
@@ -94,7 +94,7 @@ int	insert(char **arguments, t_config *config)
 		return (1);
 	config->number_of_compiles_required = ft_atoi(arguments[5]);
 	config->dongle_cooldown = ft_atoi(arguments[6]);
-	if (strcmp("fifo",arguments[7]) == 0)
+	if (strcmp("fifo", arguments[7]) == 0)
 		config->scheduler = 0;
 	else if (strcmp("edf", arguments[7]) == 0)
 		config->scheduler = 1;
@@ -110,7 +110,8 @@ int	parsing(int ac, char **av, t_config *config)
 	if (ac != 9 || ft_error(ac, av) == 1)
 		return (ft_write(), 1);
 	arguments = normalize(ac, av);
-	if (!arguments || check_av(arguments) == 1 || insert(arguments,config)== 1)
+	if (!arguments || check_av(arguments) == 1 || insert(arguments,
+			config) == 1)
 		return (free_arguments(arguments), ft_write(), 1);
 	free_arguments(arguments);
 	return (0);

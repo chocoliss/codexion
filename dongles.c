@@ -12,50 +12,50 @@
 
 #include "codexion.h"
 
-void    release_dongles(int i, t_sim *sim)
+void	release_dongles(int i, t_sim *sim)
 {
-    int left;
-    int right;
-    long cooldown;
+	int		left;
+	int		right;
+	long	cooldown;
 
-    left = i;
-    right = (i + 1) % sim->config.number_of_coders;
-    pthread_mutex_lock(&sim->state_mutex);
-    if (sim->dongles[left].taken == 1 && sim->dongles[right].taken == 1)
-    {
-        cooldown = get_time_ms() + sim->config.dongle_cooldown;
-        sim->dongles[left].taken = 0;
-        sim->dongles[right].taken = 0;
-        sim->dongles[left].cooldown_until = cooldown;
-        sim->dongles[right].cooldown_until = cooldown;
-        pthread_cond_broadcast(&sim->dongles_cond);
-    }
-    pthread_mutex_unlock(&sim->state_mutex);
+	left = i;
+	right = (i + 1) % sim->config.number_of_coders;
+	pthread_mutex_lock(&sim->state_mutex);
+	if (sim->dongles[left].taken == 1 && sim->dongles[right].taken == 1)
+	{
+		cooldown = get_time_ms() + sim->config.dongle_cooldown;
+		sim->dongles[left].taken = 0;
+		sim->dongles[right].taken = 0;
+		sim->dongles[left].cooldown_until = cooldown;
+		sim->dongles[right].cooldown_until = cooldown;
+		pthread_cond_broadcast(&sim->dongles_cond);
+	}
+	pthread_mutex_unlock(&sim->state_mutex);
 }
 
-void increment_compile_count(t_sim *sim, t_coder *coder)
+void	increment_compile_count(t_sim *sim, t_coder *coder)
 {
-    pthread_mutex_lock(&sim->state_mutex);
-    coder->compile_count++;
-    pthread_mutex_unlock(&sim->state_mutex);
+	pthread_mutex_lock(&sim->state_mutex);
+	coder->compile_count++;
+	pthread_mutex_unlock(&sim->state_mutex);
 }
 
-void increment_last_compile_start(t_sim *sim, t_coder *coder)
+void	increment_last_compile_start(t_sim *sim, t_coder *coder)
 {
-    pthread_mutex_lock(&sim->state_mutex);
-    coder->last_compile_start = get_time_ms();
-    pthread_mutex_unlock(&sim->state_mutex);
+	pthread_mutex_lock(&sim->state_mutex);
+	coder->last_compile_start = get_time_ms();
+	pthread_mutex_unlock(&sim->state_mutex);
 }
 
-int keep_compiling(t_sim *sim, t_coder *coder)
+int	keep_compiling(t_sim *sim, t_coder *coder)
 {
-    int result;
+	int	result;
 
-    pthread_mutex_lock(&sim->state_mutex);
-    result = (sim->stop == 0 &&
-              coder->compile_count < sim->config.number_of_compiles_required);
-    pthread_mutex_unlock(&sim->state_mutex);
-    return (result);
+	pthread_mutex_lock(&sim->state_mutex);
+	result = (sim->stop == 0
+			&& coder->compile_count < sim->config.number_of_compiles_required);
+	pthread_mutex_unlock(&sim->state_mutex);
+	return (result);
 }
 
 int	take_dongles(int i, t_sim *sim)
@@ -64,8 +64,7 @@ int	take_dongles(int i, t_sim *sim)
 	int	right;
 
 	pthread_mutex_lock(&sim->state_mutex);
-	if (sim->coders[i].compile_count
-		>= sim->config.number_of_compiles_required)
+	if (sim->coders[i].compile_count >= sim->config.number_of_compiles_required)
 		return (pthread_mutex_unlock(&sim->state_mutex), 0);
 	enqueue(sim, i);
 	left = i;
@@ -74,7 +73,6 @@ int	take_dongles(int i, t_sim *sim)
 		return (coder_case(sim, i, left));
 	dongles_wait(sim, i, left, right);
 	if (sim->stop == 1)
-		return (dequeue_i(sim, i),
-			pthread_mutex_unlock(&sim->state_mutex), 0);
+		return (dequeue_i(sim, i), pthread_mutex_unlock(&sim->state_mutex), 0);
 	return (take_success(sim, i, left, right));
 }

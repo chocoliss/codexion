@@ -19,7 +19,7 @@ int	ft_error(int ac, char **av)
 	i = 1;
 	while (i < ac)
 	{
-		if (av[i] == NULL || av[i][0] == '\0') 
+		if (av[i] == NULL || av[i][0] == '\0')
 			return (1);
 		i++;
 	}
@@ -52,31 +52,31 @@ int	finteger(char **arguments)
 	return (0);
 }
 
-void ft_putchar(int i)
+void	ft_putchar(int i)
 {
-    write(1,&i,1);
+	write(1, &i, 1);
 }
 
-void ft_putnbr(int nb)
+void	ft_putnbr(int nb)
 {
 	if (nb == -2147483648)
 	{
-		write(1,"-2147483648",11);
-		return;
+		write(1, "-2147483648", 11);
+		return ;
 	}
 	if (nb < 0)
 	{
 		nb = -nb;
-		write(1,"-",1);
+		write(1, "-", 1);
 	}
 	if (nb > 9)
-        ft_putnbr(nb / 10);
+		ft_putnbr(nb / 10);
 	ft_putchar((nb % 10) + 48);
-	return;
+	return ;
 }
 
-void ft_putstr(char *str)
+void	ft_putstr(char *str)
 {
-	while(*str)
-		write(1,str++,1);
+	while (*str)
+		write(1, str++, 1);
 }

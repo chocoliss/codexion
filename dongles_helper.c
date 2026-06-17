@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dongles_helper.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/16 19:45:56 by imansar           #+#    #+#             */
+/*   Updated: 2026/06/16 19:45:57 by imansar          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 int	coder_case(t_sim *sim, int i, int left)
@@ -31,15 +43,13 @@ void	dongles_wait(t_sim *sim, int i, int left, int right)
 
 	while (sim->stop == 0 && take(sim, i, left, right) == 0)
 	{
-		if (sim->dongles[left].taken == 0
-			&& sim->dongles[right].taken == 0
+		if (sim->dongles[left].taken == 0 && sim->dongles[right].taken == 0
 			&& sim->queue[sim->front] == i)
 		{
 			wake = ft_max(sim->dongles[left].cooldown_until,
 					sim->dongles[right].cooldown_until);
 			ts = ms_to_timespec(wake);
-			pthread_cond_timedwait(&sim->dongles_cond,
-				&sim->state_mutex, &ts);
+			pthread_cond_timedwait(&sim->dongles_cond, &sim->state_mutex, &ts);
 		}
 		else
 			pthread_cond_wait(&sim->dongles_cond, &sim->state_mutex);
@@ -57,9 +67,9 @@ int	take_success(t_sim *sim, int i, int left, int right)
 	return (1);
 }
 
-long ft_max(long left,long right)
+long	ft_max(long left, long right)
 {
 	if (left > right)
-		return left;
-	return right;
+		return (left);
+	return (right);
 }
