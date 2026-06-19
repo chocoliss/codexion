@@ -28,6 +28,7 @@ SRCS = codexion.c \
        ft_split.c \
        libft.c \
        helper.c \
+	   helper2.c \
 	   rules.c \
 	   threads.c \
 	   simulation.c \

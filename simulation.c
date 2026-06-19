@@ -12,29 +12,43 @@
 
 #include "codexion.h"
 
+static int	alloc_sim_arrays(t_config *config, t_sim *sim)
+{
+	sim->queue = malloc(sizeof(int) * config->number_of_coders);
+	sim->queued = malloc(sizeof(int) * config->number_of_coders);
+	sim->queue_order = malloc(sizeof(long) * config->number_of_coders);
+	sim->dongles = malloc(sizeof(t_dongle) * config->number_of_coders);
+	sim->coders = malloc(sizeof(t_coder) * config->number_of_coders);
+	if (!sim->queue || !sim->queued || !sim->queue_order
+		|| !sim->dongles || !sim->coders)
+		return (1);
+	memset(sim->queued, 0, sizeof(int) * config->number_of_coders);
+	memset(sim->queue_order, 0, sizeof(long) * config->number_of_coders);
+	memset(sim->dongles, 0, sizeof(t_dongle) * config->number_of_coders);
+	memset(sim->coders, 0, sizeof(t_coder) * config->number_of_coders);
+	return (0);
+}
+
 int	init_sim(t_config *config, t_sim *sim)
 {
+	memset(sim, 0, sizeof(t_sim));
 	sim->config = *config;
-	sim->start_time = 0;
-	sim->stop = 0;
-	sim->queue = (int *)malloc(sizeof(int) * config->number_of_coders);
-	sim->front = 0;
-	sim->rear = 0;
-	sim->count = 0;
-	sim->dongles = malloc(sizeof(t_dongle) * config->number_of_coders);
-	if (!sim->dongles)
-		return (1);
-	sim->coders = malloc(sizeof(t_coder) * config->number_of_coders);
-	if (!sim->coders)
-	{
-		free(sim->dongles);
-		return (1);
-	}
-	pthread_mutex_init(&sim->log_mutex, NULL);
-	pthread_mutex_init(&sim->state_mutex, NULL);
+	if (alloc_sim_arrays(config, sim) == 1)
+		return (free(sim->queue), free(sim->queued), free(sim->queue_order),
+			free(sim->dongles), free(sim->coders), 1);
+	if (pthread_mutex_init(&sim->log_mutex, NULL) != 0)
+		return (free(sim->queue), free(sim->queued), free(sim->queue_order),
+			free(sim->dongles), free(sim->coders), 1);
+	sim->log_mutex_ready = 1;
+	if (pthread_mutex_init(&sim->state_mutex, NULL) != 0)
+		return (clear_sim(sim), 1);
+	sim->state_mutex_ready = 1;
+	if (pthread_cond_init(&sim->dongles_cond, NULL) != 0)
+		return (clear_sim(sim), 1);
+	sim->dongles_cond_ready = 1;
 	fill_coders(config, sim);
-	fill_dongles(config, sim);
-	pthread_cond_init(&sim->dongles_cond, NULL);
+	if (fill_dongles(config, sim) == 1)
+		return (clear_sim(sim), 1);
 	return (0);
 }
 
@@ -56,10 +70,9 @@ void	fill_coders(t_config *config, t_sim *sim)
 		sim->coders[i].sim = sim;
 		i++;
 	}
-	return ;
 }
 
-void	fill_dongles(t_config *config, t_sim *sim)
+int	fill_dongles(t_config *config, t_sim *sim)
 {
 	int	i;
 
@@ -69,11 +82,14 @@ void	fill_dongles(t_config *config, t_sim *sim)
 		sim->dongles[i].id = i;
 		sim->dongles[i].taken = 0;
 		sim->dongles[i].cooldown_until = 0;
-		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
-		pthread_cond_init(&sim->dongles[i].cond, NULL);
+		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
+			return (1);
+		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
+			return (pthread_mutex_destroy(&sim->dongles[i].mutex), 1);
+		sim->dongles_ready++;
 		i++;
 	}
-	return ;
+	return (0);
 }
 
 int	is_stopped(t_sim *sim)

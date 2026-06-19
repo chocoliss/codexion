@@ -12,6 +12,7 @@
 
 #include "codexion.h"
 
+
 void	release_dongles(int i, t_sim *sim)
 {
 	int		left;
@@ -64,15 +65,16 @@ int	take_dongles(int i, t_sim *sim)
 	int	right;
 
 	pthread_mutex_lock(&sim->state_mutex);
+	left = i;
+	right = (i + 1) % sim->config.number_of_coders;
 	if (sim->coders[i].compile_count >= sim->config.number_of_compiles_required)
 		return (pthread_mutex_unlock(&sim->state_mutex), 0);
 	enqueue(sim, i);
-	left = i;
-	right = (i + 1) % sim->config.number_of_coders;
-	if (left == right)
-		return (coder_case(sim, i, left));
+	if (sim->config.number_of_coders == 1)
+		return (onecoder(sim, i, left));
 	dongles_wait(sim, i, left, right);
 	if (sim->stop == 1)
-		return (dequeue_i(sim, i), pthread_mutex_unlock(&sim->state_mutex), 0);
+		return (dequeue_i(sim, i),
+			pthread_mutex_unlock(&sim->state_mutex), 0);
 	return (take_success(sim, i, left, right));
 }

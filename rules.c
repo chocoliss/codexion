@@ -64,31 +64,6 @@ int	all_coders_finished(t_sim *sim)
 	return (1);
 }
 
-void	dequeue_i(t_sim *sim, int coder_id)
-{
-	int	j;
-	int	n;
-
-	n = sim->config.number_of_coders;
-	j = 0;
-	while (j < sim->count)
-	{
-		if (sim->queue[(sim->front + j) % n] == coder_id)
-		{
-			while (j < sim->count - 1)
-			{
-				sim->queue[(sim->front + j) % n] = sim->queue[(sim->front + j
-						+ 1) % n];
-				j++;
-			}
-			sim->rear = (sim->rear - 1 + n) % n;
-			sim->count--;
-			return ;
-		}
-		j++;
-	}
-}
-
 void	ft_write(void)
 {
 	write(2, "make sure:\n", 11);

@@ -12,9 +12,9 @@
 
 #include "codexion.h"
 
-int	coder_case(t_sim *sim, int i, int left)
+int	onecoder(t_sim *sim, int i, int left)
 {
-	dequeue(sim);
+	dequeue_i(sim,i);
 	sim->dongles[left].taken = 1;
 	pthread_mutex_unlock(&sim->state_mutex);
 	print_state("has taken a dongle", &sim->coders[i]);
@@ -23,15 +23,9 @@ int	coder_case(t_sim *sim, int i, int left)
 
 int	take(t_sim *sim, int i, int left, int right)
 {
-	if (sim->dongles[left].taken == 1)
+	if (priority(sim, i) == 0)
 		return (0);
-	if (sim->dongles[right].taken == 1)
-		return (0);
-	if (sim->queue[sim->front] != i)
-		return (0);
-	if (get_time_ms() < sim->dongles[left].cooldown_until)
-		return (0);
-	if (get_time_ms() < sim->dongles[right].cooldown_until)
+	if (coder_can_take(sim, left, right) == 0)
 		return (0);
 	return (1);
 }
@@ -39,17 +33,20 @@ int	take(t_sim *sim, int i, int left, int right)
 void	dongles_wait(t_sim *sim, int i, int left, int right)
 {
 	long			wake;
+	long			now;
 	struct timespec	ts;
 
 	while (sim->stop == 0 && take(sim, i, left, right) == 0)
 	{
+		now = get_time_ms();
+		wake = ft_max(sim->dongles[left].cooldown_until,
+				sim->dongles[right].cooldown_until);
 		if (sim->dongles[left].taken == 0 && sim->dongles[right].taken == 0
-			&& sim->queue[sim->front] == i)
+			&& wake > now)
 		{
-			wake = ft_max(sim->dongles[left].cooldown_until,
-					sim->dongles[right].cooldown_until);
 			ts = ms_to_timespec(wake);
-			pthread_cond_timedwait(&sim->dongles_cond, &sim->state_mutex, &ts);
+			pthread_cond_timedwait(&sim->dongles_cond,
+				&sim->state_mutex, &ts);
 		}
 		else
 			pthread_cond_wait(&sim->dongles_cond, &sim->state_mutex);
@@ -58,7 +55,7 @@ void	dongles_wait(t_sim *sim, int i, int left, int right)
 
 int	take_success(t_sim *sim, int i, int left, int right)
 {
-	dequeue(sim);
+	dequeue_i(sim, i);
 	sim->dongles[left].taken = 1;
 	sim->dongles[right].taken = 1;
 	pthread_mutex_unlock(&sim->state_mutex);

@@ -56,24 +56,46 @@ typedef struct s_dongle
 	pthread_cond_t		cond;
 }						t_dongle;
 
+// typedef struct s_sim
+// {
+// 	t_config			config;
+// 	long				start_time;
+// 	int					stop;
+// 	int					*queue;
+// 	int					rear;
+// 	int					count;
+// 	int					front;
+
+// 	t_coder				*coders;
+// 	t_dongle			*dongles;
+// 	pthread_t			monitor;
+
+// 	pthread_mutex_t		log_mutex;
+// 	pthread_mutex_t		state_mutex;
+// 	pthread_cond_t		dongles_cond;
+// }						t_sim;
+
 typedef struct s_sim
 {
-	t_config			config;
-	long				start_time;
-	int					stop;
-	int					*queue;
-	int					rear;
-	int					count;
-	int					front;
-
-	t_coder				*coders;
-	t_dongle			*dongles;
-	pthread_t			monitor;
-
-	pthread_mutex_t		log_mutex;
-	pthread_mutex_t		state_mutex;
-	pthread_cond_t		dongles_cond;
-}						t_sim;
+	t_config		config;
+	long			start_time;
+	int				stop;
+	int				*queue;
+	int				*queued;
+	long			*queue_order;
+	long			next_order;
+	int				count;
+	t_coder			*coders;
+	t_dongle		*dongles;
+	pthread_t		monitor;
+	int				log_mutex_ready;
+	int				state_mutex_ready;
+	int				dongles_cond_ready;
+	int				dongles_ready;
+	pthread_mutex_t	log_mutex;
+	pthread_mutex_t	state_mutex;
+	pthread_cond_t	dongles_cond;
+} 	t_sim;
 
 long					get_time_ms(void);
 long					timestamp(t_sim *sim);
@@ -100,7 +122,7 @@ int						create_threads(t_sim *sim);
 int						start_simulation(t_sim *sim);
 int						init_sim(t_config *config, t_sim *sim);
 void					fill_coders(t_config *config, t_sim *sim);
-void					fill_dongles(t_config *config, t_sim *sim);
+int						fill_dongles(t_config *config, t_sim *sim);
 void					clear_sim(t_sim *sim);
 void					print_state(char *msg, t_coder *coder);
 void					*monitor_routine(void *arg);
@@ -124,13 +146,17 @@ int						keep_compiling(t_sim *sim, t_coder *coder);
 int						take_success(t_sim *sim, int i, int left, int right);
 void					dongles_wait(t_sim *sim, int i, int left, int right);
 int						take(t_sim *sim, int i, int left, int right);
-int						coder_case(t_sim *sim, int i, int left);
+int						onecoder(t_sim *sim, int i, int left);
 
 long					get_deadline(t_sim *sim, int coder_id);
 void					enqueue(t_sim *sim, int coder_id);
-void					enqueue_fifo(t_sim *sim, int coder_id);
+// void					enqueue_fifo(t_sim *sim, int coder_id);
 int						dequeue(t_sim *sim);
-void					enqueue_edf(t_sim *sim, int coder_id);
+// void					enqueue_edf(t_sim *sim, int coder_id);
 void					dequeue_i(t_sim *sim, int i);
+
+int	priority(t_sim *sim, int i);
+int	stop_join(t_sim *sim, int created);
+int	coder_can_take(t_sim *sim, int left, int right);
 
 #endif

@@ -50,7 +50,7 @@ int	create_threads(t_sim *sim)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL, coder_routine,
 				&sim->coders[i]) != 0)
-			return (1);
+			return (stop_join(sim, i));
 		i++;
 	}
 	i = 0;
