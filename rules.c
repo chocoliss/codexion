@@ -6,7 +6,7 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:15:55 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/16 19:47:10 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/20 17:08:20 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	print_burnout(t_coder *coder)
 	write(1, " ", 1);
 	ft_putnbr(coder->id);
 	write(1, " ", 1);
-	ft_putstr("burned out\n");
+	ft_putstr("burned out");
 	write(1, "\n", 1);
 	pthread_mutex_unlock(&sim->log_mutex);
 }

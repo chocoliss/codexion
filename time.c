@@ -6,7 +6,7 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:16:04 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/14 15:16:05 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/20 17:07:48 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	set_stop(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->state_mutex);
 	sim->stop = 1;
-	pthread_cond_broadcast(&sim->dongles_cond);
 	pthread_mutex_unlock(&sim->state_mutex);
 }
 

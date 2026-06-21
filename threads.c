@@ -6,7 +6,7 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:16:01 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/16 19:49:25 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/20 17:06:40 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,7 @@ void	*monitor_routine(void *arg)
 			if (get_time_ms()
 				- sim->coders[i].last_compile_start >= 
 				sim->config.time_to_burnout)
-				return (sim->stop = 1, pthread_mutex_unlock(&sim->state_mutex),
-					pthread_cond_broadcast(&sim->dongles_cond),
-					print_burnout(&sim->coders[i]), NULL);
+				return (sim->stop = 1, pthread_mutex_unlock(&sim->state_mutex),pthread_cond_broadcast(&sim->dongles_cond),print_burnout(&sim->coders[i]), NULL);
 			pthread_mutex_unlock(&sim->state_mutex);
 			i++;
 		}
