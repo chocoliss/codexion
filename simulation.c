@@ -6,13 +6,13 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:15:59 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/14 15:55:36 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 15:38:57 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	alloc_sim_arrays(t_config *config, t_sim *sim)
+int	alloc_sim_arrays(t_config *config, t_sim *sim)
 {
 	sim->queue = malloc(sizeof(int) * config->number_of_coders);
 	sim->queued = malloc(sizeof(int) * config->number_of_coders);

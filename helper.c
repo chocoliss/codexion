@@ -5,104 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/14 15:14:39 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/14 15:14:40 by imansar          ###   ########.fr       */
+/*   Created: 2026/06/21 15:26:56 by imansar           #+#    #+#             */
+/*   Updated: 2026/06/21 15:47:23 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-long	ft_atoi(const char *str)
+int	coder_can_take(t_sim *sim, int left, int right)
 {
-	long	value;
-	long	sign;
-	int		digit;
+	long	now;
 
-	value = 0;
-	sign = 1;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))
-		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			sign = -1;
-		str++;
-	}
-	while (*str >= '0' && *str <= '9')
-	{
-		digit = (*str - '0');
-		value = value * 10 + digit;
-		if (sign == 1 && value > INT32_MAX)
-			return (LONG_MAX);
-		if (sign == -1 && value > 2147483648L)
-			return (LONG_MIN);
-		str++;
-	}
-	return ((value * sign));
+	now = get_time_ms();
+	if (sim->dongles[left].taken == 1)
+		return (0);
+	if (sim->dongles[right].taken == 1)
+		return (0);
+	if (now < sim->dongles[left].cooldown_until)
+		return (0);
+	if (now < sim->dongles[right].cooldown_until)
+		return (0);
+	return (1);
 }
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+int	stop_join(t_sim *sim, int created)
 {
-	size_t			i;
-	unsigned char	*s;
+	int	i;
 
-	if (dst == src)
-		return (dst);
-	s = (unsigned char *)src;
+	set_stop(sim);
 	i = 0;
-	while (i < n)
+	while (i < created)
 	{
-		((unsigned char *)dst)[i] = s[i];
+		pthread_join(sim->coders[i].thread, NULL);
 		i++;
 	}
-	return (dst);
+	pthread_join(sim->monitor, NULL);
+	return (1);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	set_stop(t_sim *sim)
 {
-	char	*p;
-	int		len1;
-	int		len2;
-
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
-	len1 = strlen(s1);
-	len2 = strlen(s2);
-	p = malloc(len1 + len2 + 1);
-	if (!p)
-		return (NULL);
-	ft_memcpy(p, s1, len1);
-	ft_memcpy(p + len1, s2, len2);
-	p[len1 + len2] = '\0';
-	return (p);
+	pthread_mutex_lock(&sim->state_mutex);
+	sim->stop = 1;
+	pthread_mutex_unlock(&sim->state_mutex);
 }
 
-char	*ft_strchr(const char *s, int c)
+void	print_state(char *msg, t_coder *coder)
 {
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if ((char)c == '\0')
-		return ((char *)s);
-	return (NULL);
+	t_sim	*sim;
+
+	sim = coder->sim;
+	if (is_stopped(sim) == 1)
+		return ;
+	pthread_mutex_lock(&sim->log_mutex);
+	ft_putnbr((int)timestamp(sim));
+	write(1, " ", 1);
+	ft_putnbr(coder->id);
+	write(1, " ", 1);
+	ft_putstr(msg);
+	write(1, "\n", 1);
+	pthread_mutex_unlock(&sim->log_mutex);
 }
 
-char	*ft_strdup(const char *s)
+long	ft_max(long left, long right)
 {
-	char	*dup;
-	size_t	len;
-
-	len = strlen(s);
-	dup = (char *)malloc(len + 1);
-	if (!dup)
-		return (NULL);
-	ft_memcpy(dup, s, len + 1);
-	return (dup);
+	if (left > right)
+		return (left);
+	return (right);
 }

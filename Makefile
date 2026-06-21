@@ -6,14 +6,14 @@
 #    By: imansar <imansar@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/14 15:14:53 by imansar           #+#    #+#              #
-#    Updated: 2026/06/14 15:14:54 by imansar          ###   ########.fr        #
+#    Updated: 2026/06/21 16:02:54 by imansar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = codexion
 CC = cc 
-# CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
-CFLAGS = -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
+
 LEAKS =  valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
@@ -22,14 +22,13 @@ LEAKS =  valgrind --leak-check=full \
          ./executable exampleParam1
 
 
-# Source files
 SRCS = codexion.c \
 	   parsing.c \
        ft_split.c \
        libft.c \
-       helper.c \
-	   helper2.c \
-	   rules.c \
+       libft2.c \
+	   helper.c \
+	   errors.c \
 	   threads.c \
 	   simulation.c \
 	   time.c \
@@ -38,10 +37,8 @@ SRCS = codexion.c \
 	   queue.c 
 
 
-# Object files
 OBJS = $(SRCS:.c=.o)
 
-# Rules
 all: $(NAME)
 
 $(NAME): $(OBJS)

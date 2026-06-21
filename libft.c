@@ -6,51 +6,11 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:14:42 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/14 15:14:43 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 15:38:02 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-int	ft_error(int ac, char **av)
-{
-	int	i;
-
-	i = 1;
-	while (i < ac)
-	{
-		if (av[i] == NULL || av[i][0] == '\0')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int	finteger(char **arguments)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (arguments[i] && i < 7)
-	{
-		j = 0;
-		if (!arguments[i][0])
-			return (1);
-		if (arguments[i][j] == '+' || arguments[i][j] == '-')
-			j++;
-		if (!arguments[i][j])
-			return (1);
-		while (arguments[i][j])
-		{
-			if (arguments[i][j] < '0' || arguments[i][j] > '9')
-				return (1);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
 
 void	ft_putchar(int i)
 {
@@ -79,4 +39,59 @@ void	ft_putstr(char *str)
 {
 	while (*str)
 		write(1, str++, 1);
+}
+
+long	ft_atoi(const char *str)
+{
+	long	value;
+	long	sign;
+	int		digit;
+
+	value = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		digit = (*str - '0');
+		value = value * 10 + digit;
+		if (sign == 1 && value > INT32_MAX)
+			return (LONG_MAX);
+		if (sign == -1 && value > 2147483648L)
+			return (LONG_MIN);
+		str++;
+	}
+	return ((value * sign));
+}
+
+int	finteger(char **arguments)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (arguments[i] && i < 7)
+	{
+		j = 0;
+		if (!arguments[i][0])
+			return (1);
+		if (arguments[i][j] == '+' || arguments[i][j] == '-')
+			j++;
+		if (!arguments[i][j])
+			return (1);
+		while (arguments[i][j])
+		{
+			if (arguments[i][j] < '0' || arguments[i][j] > '9')
+				return (1);
+			j++;
+		}
+		i++;
+	}
+	return (0);
 }

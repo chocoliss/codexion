@@ -6,12 +6,11 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:14:32 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/20 16:49:01 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 16:02:01 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
 
 void	release_dongles(int i, t_sim *sim)
 {

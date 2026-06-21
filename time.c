@@ -6,7 +6,7 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:16:04 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/20 17:07:48 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 15:29:12 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,6 @@ long	get_time_ms(void)
 long	timestamp(t_sim *sim)
 {
 	return (get_time_ms() - sim->start_time);
-}
-
-void	set_stop(t_sim *sim)
-{
-	pthread_mutex_lock(&sim->state_mutex);
-	sim->stop = 1;
-	pthread_mutex_unlock(&sim->state_mutex);
 }
 
 struct timespec	ms_to_timespec(long ms)
@@ -53,4 +46,10 @@ int	smart_sleep(t_sim *sim, long duration_ms)
 		usleep(1000);
 	}
 	return (0);
+}
+
+long	get_deadline(t_sim *sim, int coder_id)
+{
+	return (sim->coders[coder_id].last_compile_start
+		+ sim->config.time_to_burnout);
 }

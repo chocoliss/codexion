@@ -1,30 +1,59 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rules.c                                            :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 15:15:55 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/20 17:08:20 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 15:54:33 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	free_arguments(char **args)
+int	dequeue(t_sim *sim)
+{
+	int	coder_id;
+
+	if (sim->count == 0)
+		return (-1);
+	coder_id = sim->queue[0];
+	sim->queued[coder_id] = 0;
+	sim->count--;
+	if (sim->count > 0)
+	{
+		sim->queue[0] = sim->queue[sim->count];
+		heap_down(sim, 0);
+	}
+	return (coder_id);
+}
+
+void	enqueue(t_sim *sim, int coder_id)
+{
+	if (sim->queued[coder_id] == 1)
+		return ;
+	if (sim->count >= sim->config.number_of_coders)
+		return ;
+	sim->queued[coder_id] = 1;
+	sim->queue_order[coder_id] = sim->next_order++;
+	sim->queue[sim->count] = coder_id;
+	heap_up(sim, sim->count);
+	sim->count++;
+}
+
+int	ft_error(int ac, char **av)
 {
 	int	i;
 
-	if (!args)
-		return ;
-	i = 0;
-	while (args[i])
+	i = 1;
+	while (i < ac)
 	{
-		free(args[i]);
+		if (av[i] == NULL || av[i][0] == '\0')
+			return (1);
 		i++;
 	}
-	free(args);
+	return (0);
 }
 
 void	print_burnout(t_coder *coder)
@@ -40,28 +69,6 @@ void	print_burnout(t_coder *coder)
 	ft_putstr("burned out");
 	write(1, "\n", 1);
 	pthread_mutex_unlock(&sim->log_mutex);
-}
-
-int	all_coders_finished(t_sim *sim)
-{
-	int	i;
-
-	if (sim->config.number_of_compiles_required <= 0)
-		return (0);
-	i = 0;
-	pthread_mutex_lock(&sim->state_mutex);
-	while (i < sim->config.number_of_coders)
-	{
-		if (sim->config.number_of_compiles_required > 
-			sim->coders[i].compile_count)
-		{
-			pthread_mutex_unlock(&sim->state_mutex);
-			return (0);
-		}
-		i++;
-	}
-	pthread_mutex_unlock(&sim->state_mutex);
-	return (1);
 }
 
 void	ft_write(void)

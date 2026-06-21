@@ -6,7 +6,7 @@
 /*   By: imansar <imansar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 19:45:56 by imansar           #+#    #+#             */
-/*   Updated: 2026/06/20 17:02:27 by imansar          ###   ########.fr       */
+/*   Updated: 2026/06/21 15:58:59 by imansar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	onecoder(t_sim *sim, int i, int left)
 {
-	dequeue_i(sim,i);
+	dequeue_i(sim, i);
 	sim->dongles[left].taken = 1;
 	pthread_mutex_unlock(&sim->state_mutex);
 	print_state("has taken a dongle", &sim->coders[i]);
@@ -45,8 +45,7 @@ void	dongles_wait(t_sim *sim, int i, int left, int right)
 			&& wake > now)
 		{
 			ts = ms_to_timespec(wake);
-			pthread_cond_timedwait(&sim->dongles_cond,
-				&sim->state_mutex, &ts);
+			pthread_cond_timedwait(&sim->dongles_cond, &sim->state_mutex, &ts);
 		}
 		else
 			pthread_cond_wait(&sim->dongles_cond, &sim->state_mutex);
@@ -64,9 +63,22 @@ int	take_success(t_sim *sim, int i, int left, int right)
 	return (1);
 }
 
-long	ft_max(long left, long right)
+int	priority(t_sim *sim, int i)
 {
-	if (left > right)
-		return (left);
-	return (right);
+	int	pos;
+	int	other;
+
+	if (sim->queued[i] == 0)
+		return (0);
+	pos = 0;
+	while (pos < sim->count)
+	{
+		other = sim->queue[pos];
+		if (other != i && share_dongle(sim, other, i) && queue_less(sim, other,
+				i) && coder_can_take(sim, other, (other + 1)
+				% sim->config.number_of_coders))
+			return (0);
+		pos++;
+	}
+	return (1);
 }
