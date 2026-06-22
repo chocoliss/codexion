@@ -25,13 +25,13 @@ int	check_av(char **arguments)
 	while (arguments[i] && i < 7)
 	{
 		j = ft_atoi(arguments[i]);
-		if (j == LONG_MAX || j == LONG_MIN)
+		if (j == LONG_MAX || j == LONG_MIN || j < 0)
 			return (1);
 		k = i + 1;
 		while (arguments[k] && k < 7)
 		{
 			g = ft_atoi(arguments[k]);
-			if (g == LONG_MAX || g == LONG_MIN)
+			if (g == LONG_MAX || g == LONG_MIN || j < 0)
 				return (1);
 			k++;
 		}

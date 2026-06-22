@@ -19,18 +19,23 @@ void	clear_sim(t_sim *sim)
 	if (!sim)
 		return ;
 	i = 0;
-	while (i < sim->config.number_of_coders)
+	while (i < sim->dongles_ready)
 	{
 		pthread_mutex_destroy(&sim->dongles[i].mutex);
 		pthread_cond_destroy(&sim->dongles[i].cond);
 		i++;
 	}
-	pthread_mutex_destroy(&sim->log_mutex);
-	pthread_mutex_destroy(&sim->state_mutex);
-	pthread_cond_destroy(&sim->dongles_cond);
+	if (sim->log_mutex_ready)
+		pthread_mutex_destroy(&sim->log_mutex);
+	if (sim->state_mutex_ready)
+		pthread_mutex_destroy(&sim->state_mutex);
+	if (sim->dongles_cond_ready)
+		pthread_cond_destroy(&sim->dongles_cond);
 	free(sim->coders);
 	free(sim->dongles);
 	free(sim->queue);
+	free(sim->queued);
+	free(sim->queue_order);
 	return ;
 }
 

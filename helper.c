@@ -33,6 +33,7 @@ int	stop_join(t_sim *sim, int created)
 	int	i;
 
 	set_stop(sim);
+	pthread_cond_broadcast(&sim->dongles_cond);
 	i = 0;
 	while (i < created)
 	{
